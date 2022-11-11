@@ -19,6 +19,7 @@ import {
   View,
 } from 'react-native';
 import SplashScreen from 'react-native-splash-screen';
+import Geolocation from 'react-native-geolocation-service';
 
 import {
   Colors,
@@ -58,6 +59,15 @@ const Section: React.FC<
   );
 };
 
+async function isPermission() {
+  const response = await Geolocation.requestAuthorization('whenInUse');
+  if (response === 'granted') {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 const App = () => {
   const isDarkMode = useColorScheme() === 'dark';
 
@@ -66,9 +76,24 @@ const App = () => {
   };
 
   useEffect(() => {
-    setTimeout(() => {
-      SplashScreen.hide();
-    }, 2000);
+    isPermission().then((res) => {
+      if (res === true) {
+        Geolocation.getCurrentPosition(
+          (position) => {
+            console.log(position);
+            SplashScreen.hide();
+          },
+          (err) => {
+            console.log(err);
+          },
+          {
+            enableHighAccuracy: true,
+            timeout: 15000,
+            maximumAge: 10000,
+          },
+        );
+      }
+    });
   }, []);
 
   return (
