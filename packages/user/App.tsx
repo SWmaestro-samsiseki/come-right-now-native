@@ -8,7 +8,7 @@
  * @format
  */
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { SafeAreaView, StyleSheet } from 'react-native';
 import SplashScreen from 'react-native-splash-screen';
 import Geolocation from 'react-native-geolocation-service';
@@ -18,13 +18,34 @@ async function isPermission() {
   return await Geolocation.requestAuthorization('whenInUse');
 }
 
+// interface GPS {
+//   latitude: number;
+//   longitude: number;
+// }
+
 const App = () => {
+  // const [location, setLocation] = useState<GPS>({ latitude: -1, longitude: -1 });
+  const webView = useRef<WebView>(null);
+
   useEffect(() => {
     isPermission().then((res) => {
       if (res === 'granted') {
         Geolocation.getCurrentPosition(
           (position) => {
-            console.log(position);
+            // setLocation({
+            //   latitude: position.coords.latitude,
+            //   longitude: position.coords.longitude,
+            // });
+            const location = {
+              latitude: position.coords.latitude,
+              longitude: position.coords.longitude,
+            };
+            console.log(location);
+            // webView.current?.injectJavaScript(`
+            // alert("${location.latitude}, ${location.longitude}");
+            // true;
+            // `);
+            webView.current?.postMessage(JSON.stringify(location));
             SplashScreen.hide();
           },
           (err) => {
@@ -42,7 +63,7 @@ const App = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <WebView source={{ uri: 'http://localhost:3000/login' }} />
+      <WebView ref={webView} source={{ uri: 'http://localhost:3000/login' }} />
     </SafeAreaView>
   );
 };
