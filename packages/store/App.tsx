@@ -22,7 +22,7 @@ const App = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <WebView source={{ uri: 'http://localhost:3001' }} />
+      <WebView source={{ uri: 'http://store.jigeumgo.com/' }} />
     </SafeAreaView>
   );
 };

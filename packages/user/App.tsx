@@ -76,11 +76,7 @@ const App = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <WebView
-        ref={webView}
-        source={{ uri: 'http://localhost:3000/login' }}
-        onMessage={onMessage}
-      />
+      <WebView ref={webView} source={{ uri: 'http://user.jigeumgo.com/' }} onMessage={onMessage} />
     </SafeAreaView>
   );
 };
